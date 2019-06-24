@@ -1,0 +1,31 @@
+{
+    "name": "alex19pov31/bitrix-model",
+    "description": "Model for bitrix",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "bitrix",
+        "orm",
+        "model"
+    ],
+    "authors": [
+        {
+            "name": "Nesterov Alexander",
+            "email": "alex19pov31@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Alex19pov31\\BitrixModel\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.0",
+        "alex19pov31/bitrix-orm-helper": "^0.1.0",
+        "alex19pov31/bitrix-helper": "^0.2.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.5",
+        "mockery/mockery": "^1.2"
+    }
+}
