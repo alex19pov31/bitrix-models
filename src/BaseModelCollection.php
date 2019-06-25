@@ -106,15 +106,35 @@ class BaseModelCollection implements \ArrayAccess, \Iterator, \Countable
 
     public function sort(string $column, bool $isAscending = true): BaseModelCollection
     {
-        $newList = $this->keyBy($column);
-        if ($isAscending) {
-            ksort($newList);
-        } else {
-            asort($newList);
+        $newList = $this->items;
+        usort($newList, function ($a, $b) use ($column, $isAscending) {
+            $columnA = $a[$column];
+            $columnB = $b[$column];
+            return $this->internalSort($columnA, $columnB, $isAscending);
+        });
+
+        return new static($newList ? $newList : [], $this->class);
+    }
+
+    private function internalSort($columnA, $columnB, $isAscending)
+    {
+        $num = $isAscending ? 1 : -1;
+
+        if (is_numeric($columnA) && is_numeric($columnB)) {
+            return $num * ((float)$columnA - (float)$columnB);
         }
 
-        $newList = array_values($newList);
-        return new static($newList, $this->class);
+        if (is_numeric($columnA) && !is_numeric($columnB)) {
+            return $num * -1;
+        }
+
+        if (!is_numeric($columnA) && is_numeric($columnB)) {
+            return $num * 1;
+        }
+
+        if (!is_numeric($columnA) && !is_numeric($columnB)) {
+            return $num * strcmp($columnA, $columnB);
+        }
     }
 
     public function select(array $columnList): BaseModelCollection
@@ -162,7 +182,7 @@ class BaseModelCollection implements \ArrayAccess, \Iterator, \Countable
         $newList = [];
         $i = 0;
         foreach ($this->items as $key => $item) {
-            if ($offset < $i++) {
+            if ($offset > $i++) {
                 continue;
             }
             if (!$limit--) {
@@ -292,5 +312,23 @@ class BaseModelCollection implements \ArrayAccess, \Iterator, \Countable
         }
 
         return new static($newList, $this->class);
+    }
+
+    public function multiSort(array $sortList)
+    {
+        $newList = $this->items;
+        usort($newList, function ($a, $b) use ($sortList) {
+            foreach ($sortList as $column => $sort) {
+                $columnA = $a[$column];
+                $columnB = $b[$column];
+                $isAscending = in_array($sort, ['asc', 'ASC']);
+                $result = $this->internalSort($columnA, $columnB, $isAscending);
+                if ($result != 0) {
+                    return $result;
+                }
+            }
+        });
+
+        return new static($newList ? $newList : [], $this->class);
     }
 }
