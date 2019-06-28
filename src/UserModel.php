@@ -1,11 +1,6 @@
 <?php
 namespace Alex19pov31\BitrixModel;
 
-use CIBlockSection;
-use CIBlockResult;
-use DateTime;
-use Bitrix\Main\UserTable;
-
 class UserModel extends BaseModel
 {
     protected $props = [];
@@ -67,7 +62,13 @@ class UserModel extends BaseModel
         }
 
         if (!empty($param['select'])) {
-            $arParams['SELECT'] = $param['select'];
+            foreach ($param['select'] as $field) {
+                if (strpos($field, 'UF_') === 0) {
+                    $arParams['SELECT'][] = $field;
+                    continue;
+                }
+                $arParams['FIELDS'][] = $field;
+            }
         }
 
         $sort = $param['sort'];

@@ -1,4 +1,5 @@
 <?php
+
 namespace Alex19pov31\BitrixModel;
 
 use Alex19pov31\BitrixModel\Exceptions\ExceptionAddElementHlBlock;
@@ -22,7 +23,7 @@ abstract class BaseHlModel extends BaseModel
         }
 
         static::$em->addEventHandler('main', 'OnBeforeProlog', function () {
-            Loader::includeModule('hightloadblock');
+            Loader::includeModule('highloadblock');
             $hlBlock = static::getHlBlock();
             static::$em->addEventHandler('', $hlBlock['NAME'] . 'OnBeforeAdd', [
                 static::class,
@@ -117,7 +118,7 @@ abstract class BaseHlModel extends BaseModel
             return static::$entity[static::getTableName()];
         }
 
-        Loader::includeModule('hightloadblock');
+        Loader::includeModule('highloadblock');
         $hlBlock = HighloadBlockTable::getList([
             'filter' => [
                 'TABLE_NAME' => static::getTableName(),
@@ -169,7 +170,7 @@ abstract class BaseHlModel extends BaseModel
                 implode(' ', $result->getErrorMessages())
             );
         }
-        $data['ID'] = (int)$result;
+        $data['ID'] = (int) $result;
         return new static($data);
     }
 
@@ -198,7 +199,7 @@ abstract class BaseHlModel extends BaseModel
 
     public function getId(): int
     {
-        return (int)$this['ID'];
+        return (int) $this['ID'];
     }
 
     /**
