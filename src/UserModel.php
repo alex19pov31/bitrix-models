@@ -1,9 +1,18 @@
 <?php
+
 namespace Alex19pov31\BitrixModel;
+
+use CUser;
 
 class UserModel extends BaseModel
 {
     protected $props = [];
+    protected static $ttl = 180;
+
+    protected static function getCacheMinutes(): int
+    {
+        return (int) static::$ttl;
+    }
 
     public function __construct(array $data)
     {
@@ -26,7 +35,7 @@ class UserModel extends BaseModel
             return null;
         }
 
-        $id = (int)$USER->GetID();
+        $id = (int) $USER->GetID();
         return static::getById($id, $select);
     }
 
@@ -51,13 +60,13 @@ class UserModel extends BaseModel
      * @param array $params
      * @return BaseModelCollection
      */
-    public static function getListCollection(array $param = [], $keyBy = null)
+    public static function getListCollection(array $param = [], $keyBy = null): BaseModelCollection
     {
         $by = is_array($param['order']) ? $param['order'] : ['sort' => 'asc'];
         $order = 'desc';
         $filter = is_array($param['filter']) ? $param['filter'] : [];
         $arParams = [];
-        if ((int)$param['limit'] > 0) {
+        if ((int) $param['limit'] > 0) {
             $arParams['NAV_PARAMS']['nPageSize'] = $param['limit'];
         }
 
@@ -122,7 +131,7 @@ class UserModel extends BaseModel
     public static function add(array $data): BaseModel
     {
         $cUser = new \CUser;
-        $id = (int)$cUser->Add($data);
+        $id = (int) $cUser->Add($data);
         if (!$id) {
             throw new \Exception($cUser->LAST_ERROR);
         }
@@ -142,7 +151,7 @@ class UserModel extends BaseModel
     {
 
         $cUser = new \CUser;
-        $isSuccess = (bool)$cUser->Update($id, $data);
+        $isSuccess = (bool) $cUser->Update($id, $data);
         if (!$isSuccess) {
             throw new \Exception($cUser->LAST_ERROR);
         }
@@ -159,7 +168,7 @@ class UserModel extends BaseModel
      */
     public static function delete(int $id): bool
     {
-        return (bool)\CUser::Delete($id);
+        return (bool) \CUser::Delete($id);
     }
 
     /**
@@ -169,7 +178,7 @@ class UserModel extends BaseModel
      */
     public function getName(): string
     {
-        return (string)$this['NAME'];
+        return (string) $this['NAME'];
     }
 
     /**
@@ -179,7 +188,7 @@ class UserModel extends BaseModel
      */
     public function getLastName(): string
     {
-        return (string)$this['LAST_NAME'];
+        return (string) $this['LAST_NAME'];
     }
 
     /**
@@ -189,7 +198,7 @@ class UserModel extends BaseModel
      */
     public function getSecondName(): string
     {
-        return (string)$this['SECOND_NAME'];
+        return (string) $this['SECOND_NAME'];
     }
 
     /**
@@ -200,9 +209,9 @@ class UserModel extends BaseModel
     public function getFullName(): string
     {
         return implode(' ', [
-            (string)$this['LAST_NAME'],
-            (string)$this['NAME'],
-            (string)$this['SECOND_NAME'],
+            (string) $this['LAST_NAME'],
+            (string) $this['NAME'],
+            (string) $this['SECOND_NAME'],
         ]);
     }
 
@@ -214,8 +223,8 @@ class UserModel extends BaseModel
     public function getShortName(): string
     {
         return implode(' ', [
-            (string)$this['NAME'],
-            (string)$this['LAST_NAME'],
+            (string) $this['NAME'],
+            (string) $this['LAST_NAME'],
         ]);
     }
     /**
@@ -225,7 +234,7 @@ class UserModel extends BaseModel
      */
     public function getEmail(): string
     {
-        return (string)$this['EMAIL'];
+        return (string) $this['EMAIL'];
     }
 
     /**
@@ -235,22 +244,22 @@ class UserModel extends BaseModel
      */
     public function getLogin(): string
     {
-        return (string)$this['LOGIN'];
+        return (string) $this['LOGIN'];
     }
 
     public function getWorkPosition(): string
     {
-        return (string)$this['WORK_POSITION'];
+        return (string) $this['WORK_POSITION'];
     }
 
     public function getPersonalProfession(): string
     {
-        return (string)$this['PERSONAL_PROFESSION'];
+        return (string) $this['PERSONAL_PROFESSION'];
     }
 
     public function getPersonalPhoto(int $width = 0, int $height = 0): string
     {
-        $fileId = (int)$this['PERSONAL_PHOTO'];
+        $fileId = (int) $this['PERSONAL_PHOTO'];
         if (!$fileId) {
             return '';
         }

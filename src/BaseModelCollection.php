@@ -1,4 +1,5 @@
 <?php
+
 namespace Alex19pov31\BitrixModel;
 
 class BaseModelCollection implements \ArrayAccess, \Iterator, \Countable
@@ -121,7 +122,7 @@ class BaseModelCollection implements \ArrayAccess, \Iterator, \Countable
         $num = $isAscending ? 1 : -1;
 
         if (is_numeric($columnA) && is_numeric($columnB)) {
-            return $num * ((float)$columnA - (float)$columnB);
+            return $num * ((float) $columnA - (float) $columnB);
         }
 
         if (is_numeric($columnA) && !is_numeric($columnB)) {
@@ -169,9 +170,7 @@ class BaseModelCollection implements \ArrayAccess, \Iterator, \Countable
     {
         $result = [];
         foreach ($this->items as $item) {
-            if ($item[$column]) {
-                $result[] = $item[$column];
-            }
+            $result[] = $item[$column];
         }
 
         return $result;
@@ -265,10 +264,10 @@ class BaseModelCollection implements \ArrayAccess, \Iterator, \Countable
     {
         $sum = 0;
         foreach ($this->items as $item) {
-            $sum += (float)$item[$column];
+            $sum += (float) $item[$column];
         }
 
-        return (float)$sum;
+        return (float) $sum;
     }
 
     public function mapToArray(callable $calc, $keyBy = null): array
