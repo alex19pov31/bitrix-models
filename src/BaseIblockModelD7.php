@@ -1,12 +1,12 @@
 <?php
 namespace Alex19pov31\BitrixModel;
 
-use Alex19pov31\BitrixHelper\Iblock\IblockElementTable;
 use Bitrix\Main\ORM\Data\DataManager;
 use Alex19pov31\BitrixModel\Traits\IblockTrait;
 use Alex19pov31\BitrixModel\Traits\IblockSeoTrait;
 use Alex19pov31\BitrixModel\Traits\IblockFeatureTrait;
 use Alex19pov31\BitrixModel\Traits\IblockEventTrait;
+use Alex19pov31\BitrixModel\Entity\IblockElementTable;
 
 abstract class BaseIblockModelD7 extends BaseDataManagerModel
 {
@@ -23,7 +23,7 @@ abstract class BaseIblockModelD7 extends BaseDataManagerModel
      */
     protected static function getEntity()
     {
-        return IblockElementTable::class;
+        return IblockElementTable:: class;
     }
 
     public static function getListCollection(array $params = [], $keyBy = null): BaseModelCollection
