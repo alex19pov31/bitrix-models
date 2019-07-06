@@ -3,10 +3,14 @@
 namespace Alex19pov31\BitrixModel;
 
 use Bitrix\Main\ORM\Data\DataManager;
-use Alex19pov31\BitrixModel\Entity\UserTable;
+use Alex19pov31\BitrixModel\BaseModelCollection;
+use Bitrix\Main\UserTable;
+use Alex19pov31\BitrixModel\Traits\UserTrait;
 
 class UserModelD7 extends BaseDataManagerModel
 {
+    use UserTrait;
+
     const TTL = 180;
     private static $entity;
 
@@ -20,6 +24,19 @@ class UserModelD7 extends BaseDataManagerModel
      */
     protected static function getEntity()
     {
+        if (static::$entity) {
+            return static::$entity;
+        }
+
         return static::$entity = new UserTable;
+    }
+
+    public static function getListCollection(array $params = [], $keyBy = null): BaseModelCollection
+    {
+        if (empty($params['select'])) {
+            $params['select'] = ['*', 'UF_*'];
+        }
+
+        return parent::getListCollection($params, $keyBy);
     }
 }

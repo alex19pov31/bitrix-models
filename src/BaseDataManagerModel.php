@@ -16,11 +16,6 @@ abstract class BaseDataManagerModel extends BaseModel
     public static function getListCollection(array $params = [], $keyBy = null): BaseModelCollection
     {
         $list = [];
-        $select = $params['select'];
-        if (!$select) {
-            $params['select'] = ['*', ' ' => 'FIELDS'];
-        }
-
         $res = static::getEntity()::getList($params);
         while ($item = $res->fetch()) {
             if (!$keyBy || !isset($item[$keyBy])) {

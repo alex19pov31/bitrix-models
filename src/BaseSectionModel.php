@@ -1,18 +1,27 @@
 <?php
+
 namespace Alex19pov31\BitrixModel;
 
 use CIBlockSection;
 use CIBlockResult;
-use DateTime;
+use Alex19pov31\BitrixModel\Traits\SectionTrait;
+use Alex19pov31\BitrixModel\Traits\SectionSeoTrait;
 
 abstract class BaseSectionModel extends BaseModel
 {
+    use SectionTrait;
+    use SectionSeoTrait;
+
     abstract protected static function getIblockId(): int;
+    abstract protected static function getCacheMinutes(): int;
 
     /**
-     * @return BaseIblockModel
+     * @return BaseIblockModel|null
      */
-    abstract protected static function getElementClass();
+    protected static function getElementClass()
+    {
+        return null;
+    }
 
     /**
      * Добавление раздела
@@ -29,7 +38,7 @@ abstract class BaseSectionModel extends BaseModel
         $data['ID'] = $el->Add($fields);
 
         if (!empty($el->LAST_ERROR)) {
-            throw new ExceptionAddElementIblock((int)$fields['IBLOCK_ID'], $el->LAST_ERROR);
+            throw new ExceptionAddElementIblock((int) $fields['IBLOCK_ID'], $el->LAST_ERROR);
         }
 
         return new static($data);
@@ -51,7 +60,7 @@ abstract class BaseSectionModel extends BaseModel
         $el->Update($id, $fields);
 
         if (!empty($el->LAST_ERROR)) {
-            throw new ExceptionAddElementIblock((int)$fields['IBLOCK_ID'], $el->LAST_ERROR);
+            throw new ExceptionAddElementIblock((int) $fields['IBLOCK_ID'], $el->LAST_ERROR);
         }
 
         return new static([]);
@@ -66,25 +75,25 @@ abstract class BaseSectionModel extends BaseModel
     public static function delete(int $id): bool
     {
         Loader::includeModule('iblock');
-        return (bool)CIBlockSection::Delete($id);
+        return (bool) CIBlockSection::Delete($id);
     }
 
     public static function getList(array $params = []): CIBlockResult
     {
         Loader::includeModule('iblock');
-        $order = (array)$params['order'];
-        $select = (array)$params['select'];
+        $order = (array) $params['order'];
+        $select = (array) $params['select'];
 
         $nav = false;
-        if ((int)$params['limit'] > 0) {
+        if ((int) $params['limit'] > 0) {
             $nav['nPageSize'] = $params['limit'];
         }
 
-        if ((int)$params['offset'] > 0) {
-            $nav['iNumPage'] = (int)$params['offset'] ? ceil($params['offset'] / $params['limit']) : 1;
+        if ((int) $params['offset'] > 0) {
+            $nav['iNumPage'] = (int) $params['offset'] ? ceil($params['offset'] / $params['limit']) : 1;
         }
 
-        $filter = (array)$params['filter'];
+        $filter = (array) $params['filter'];
         $filter['IBLOCK_ID'] = static::getIblockId();
 
         return CIBlockSection::GetList($order, $filter, false, $select, $nav);
@@ -136,142 +145,38 @@ abstract class BaseSectionModel extends BaseModel
     }
 
     /**
-     * Название элемента
-     *
-     * @return string
+     * @param array $params
+     * @param string $keyBy
+     * @return BaseModelCollection|null
      */
-    public function getName(): string
+    public function getElementsList(array $params = [], $keyBy = null)
     {
-        return (string)$this['NAME'];
-    }
+        $class = static::getElementClass();
+        if (!$class) {
+            return null;
+        }
 
-    /**
-     * Код элемента
-     *
-     * @return string
-     */
-    public function getCode(): string
-    {
-        return (string)$this['CODE'];
-    }
-
-    public function getExternalId(): string
-    {
-        return (string)$this['XML_ID'];
-    }
-
-    /**
-     * Детальное описание
-     *
-     * @return string
-     */
-    public function getDescription(): string
-    {
-        return (string)$this['DESCRIPTION'];
-    }
-
-    /**
-     * Уровень вложенности
-     *
-     * @return integer
-     */
-    public function getDepthLevel(): int
-    {
-        return (int)$this['DEPTH_LEVEL'];
-    }
-
-    /**
-     * Детальная картинка
-     *
-     * @return string
-     */
-    public function getDetailPicture(): int
-    {
-        return (int)$this['DETAIL_PICTURE'];
-    }
-
-    public function getDetailPictureSrc($width = null, $height = null): string
-    {
-        return $this->getPictureSrc($this->getDetailPicture(), $width, $height);
-    }
-
-    public function getPicture(): int
-    {
-        return (int)$this['PICTURE'];
-    }
-
-    public function getPictureSrc($width = null, $height = null): string
-    {
-        return $this->getPictureSrc($this->getPicture(), $width, $height);
-    }
-
-    public function getModifiedBy(): int
-    {
-        return (int)$this['MODIFIED_BY'];
-    }
-
-    public function getCreatedBy(): int
-    {
-        return (int)$this['MODIFIED_BY'];
-    }
-
-    public function isActive(): bool
-    {
-        return $this['ACTIVE'] === 'Y';
-    }
-
-    public function isGlobalActive(): bool
-    {
-        return $this['ACTIVE'] === 'Y';
-    }
-
-    public function getSort(): int
-    {
-        return (int)$this['SORT'];
-    }
-
-    public function getDateCreate(): DateTime
-    {
-        return new DateTime($this['DATE_CREATE']);
-    }
-
-    public function getTimestamp(): DateTime
-    {
-        return new DateTime($this['TIMESTAMP_X']);
-    }
-
-    public function getLeftMargin(): int
-    {
-        return (int)$this['LEFT_MARGIN'];
-    }
-
-    public function getRightMargin(): int
-    {
-        return (int)$this['RIGHT_MARGIN'];
-    }
-
-    public function getElementsList(array $params = [], $keyBy = null): BaseModelCollection
-    {
         $params['SECTION_ID'] = $this->getId();
-        return static::getElementClass()::getListCollection($params, $keyBy);
+        return $class::getListCollection($params, $keyBy);
     }
 
-    public function getChildList($params = [], $keyBy = null, bool $includeParent = false): BaseModelCollection
+    /**
+     * @param array $params
+     * @param string $keyBy
+     * @param boolean $includeParent
+     * @return BaseModelCollection|null
+     */
+    public function getChildList($params = [], $keyBy = null, bool $includeParent = false)
     {
         if (!$includeParent) {
-            $params['filter']['>EFT_MARGIN'] = $this->getLeftMargin();
+            $params['filter']['>LEFT_MARGIN'] = $this->getLeftMargin();
             $params['filter']['<RIGHT_MARGIN'] = $this->getRightMargin();
         } else {
-            $params['filter']['>=EFT_MARGIN'] = $this->getLeftMargin();
+            $params['filter']['>=LEFT_MARGIN'] = $this->getLeftMargin();
             $params['filter']['<=RIGHT_MARGIN'] = $this->getRightMargin();
         }
 
-        return static::getElementClass()::getListCollection($params, $keyBy);
-    }
-
-    public function getParentId(): int
-    {
-        return (int)$this['SECTION_ID'];
+        return static::getListCollection($params, $keyBy);
     }
 
     /**

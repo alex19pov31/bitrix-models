@@ -1,4 +1,5 @@
 <?php
+
 namespace Alex19pov31\BitrixModel;
 
 abstract class BaseModel implements \ArrayAccess
@@ -112,7 +113,7 @@ abstract class BaseModel implements \ArrayAccess
             $size['height'] = $height;
         }
 
-        return (string)CFile::ResizeImageGet($fileId, $size)['src'];
+        return (string) CFile::ResizeImageGet($fileId, $size)['src'];
     }
 
     /**
@@ -126,7 +127,7 @@ abstract class BaseModel implements \ArrayAccess
         if (!$fileId) {
             return '';
         }
-        return (string)CFile::GetPath($fileId);
+        return (string) CFile::GetPath($fileId);
     }
 
     /**
@@ -136,17 +137,17 @@ abstract class BaseModel implements \ArrayAccess
      */
     public function getId(): int
     {
-        return (int)$this['ID'];
+        return (int) $this['ID'];
     }
 
     public function toArray(): array
     {
-        return (array)$this->props;
+        return (array) $this->props;
     }
 
     public function toJson(): string
     {
-        return (string)json_encode($this->props);
+        return (string) json_encode($this->props);
     }
 
     public function offsetExists($offset): bool
@@ -164,6 +165,11 @@ abstract class BaseModel implements \ArrayAccess
     public function offsetUnset($offset)
     {
         unset($this->props[$offset]);
+    }
+
+    public function getProps(): array
+    {
+        return $this->props;
     }
 
     public static function create(array $data): BaseModel

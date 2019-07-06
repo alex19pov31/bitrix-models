@@ -7,9 +7,16 @@ use Alex19pov31\BitrixModel\Exceptions\ExceptionAddElementIblock;
 use Alex19pov31\BitrixModel\Exceptions\ExceptionUpdateElementIblock;
 use Bitrix\Main\Loader;
 use Bitrix\Main\EventManager;
+use Alex19pov31\BitrixModel\Traits\IblockTrait;
+use Alex19pov31\BitrixModel\Traits\IblockSeoTrait;
+use Alex19pov31\BitrixModel\Traits\IblockFeatureTrait;
 
 abstract class BaseIblockModel extends BaseModel
 {
+    use IblockTrait;
+    use IblockSeoTrait;
+    use IblockFeatureTrait;
+
     abstract protected static function getIblockId(): int;
     abstract protected static function getCacheMinutes(): int;
 
@@ -152,70 +159,6 @@ abstract class BaseIblockModel extends BaseModel
         }
 
         return new BaseModelCollection($newList, static::class);
-    }
-
-    /**
-     * Название элемента
-     *
-     * @return string
-     */
-    public function getName(): string
-    {
-        return (string)$this['NAME'];
-    }
-
-    /**
-     * Код элемента
-     *
-     * @return string
-     */
-    public function getCode(): string
-    {
-        return (string)$this['CODE'];
-    }
-
-    /**
-     * Детальное описание
-     *
-     * @return string
-     */
-    public function getDetailText(): string
-    {
-        return (string)$this['DETAIL_TEXT'];
-    }
-
-    /**
-     * Описание для предпросмотра
-     *
-     * @return string
-     */
-    public function getPreviewText(): string
-    {
-        return (string)$this['PREVIEW_TEXT'];
-    }
-
-    /**
-     * Картинка для предпросмотра
-     *
-     * @param integer|null $width
-     * @param integer|null $height
-     * @return string
-     */
-    public function getPreviewPictureSrc($width = null, $height = null): string
-    {
-        return static::getPictureSrc((int)$this['PREVIEW_PICTURE'], $width, $height);
-    }
-
-    /**
-     * Детальная картинка
-     *
-     * @param integer|null $width
-     * @param integer|null $height
-     * @return string
-     */
-    public function getDetailPictureSrc($width = null, $height = null): string
-    {
-        return static::getPictureSrc((int)$this['DETAIL_PICTURE'], $width, $height);
     }
 
     private static function prepareDataIblockElement(array $data): array
