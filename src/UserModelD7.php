@@ -6,10 +6,12 @@ use Bitrix\Main\ORM\Data\DataManager;
 use Alex19pov31\BitrixModel\BaseModelCollection;
 use Bitrix\Main\UserTable;
 use Alex19pov31\BitrixModel\Traits\UserTrait;
+use Alex19pov31\BitrixModel\Traits\UserEventTrait;
 
 class UserModelD7 extends BaseDataManagerModel
 {
     use UserTrait;
+    use UserEventTrait;
 
     const TTL = 180;
     private static $entity;

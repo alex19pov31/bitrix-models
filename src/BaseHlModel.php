@@ -8,106 +8,17 @@ use Bitrix\Main\ORM\Data\AddResult;
 use Bitrix\Main\EventManager;
 use Bitrix\Main\Loader;
 use Bitrix\Main\ORM\EventResult;
+use Alex19pov31\BitrixModel\Traits\HlEventTrait;
 
 abstract class BaseHlModel extends BaseModel
 {
+    use HlEventTrait;
+
     protected $props = [];
     protected static $entity;
+    protected static $hlblock;
     abstract protected static function getTableName(): string;
     abstract protected static function getCacheMinutes(): int;
-
-    public static function listenEvents()
-    {
-        if (!static::$em) {
-            static::$em = EventManager::getInstance();
-        }
-
-        static::$em->addEventHandler('main', 'OnBeforeProlog', function () {
-            Loader::includeModule('highloadblock');
-            $hlBlock = static::getHlBlock();
-            static::$em->addEventHandler('', $hlBlock['NAME'] . 'OnBeforeAdd', [
-                static::class,
-                'onBeforeCreate',
-            ]);
-            static::$em->addEventHandler('', $hlBlock['NAME'] . 'OnAfterAdd', [
-                static::class,
-                'onAfterCreate',
-            ]);
-            static::$em->addEventHandler('', $hlBlock['NAME'] . 'OnBeforeUpdate', [
-                static::class,
-                'onBeforeUpdate',
-            ]);
-            static::$em->addEventHandler('', $hlBlock['NAME'] . 'OnAfterUpdate', [
-                static::class,
-                'onAfterUpdate',
-            ]);
-            static::$em->addEventHandler('', $hlBlock['NAME'] . 'OnAfterDelete', [
-                static::class,
-                'onAfterDelete',
-            ]);
-        });
-    }
-
-    final public static function onBeforeCreate(Event $event)
-    {
-        $params = $event->getParameters();
-        static::beforeCreate($params);
-        $result = new EventResult;
-        $result->modifyFields($params['fields']);
-        return $result;
-    }
-
-    final public static function onAfterCreate(Event $event)
-    {
-        $params = $event->getParameters();
-        static::afterCreate($params);
-        $result = new EventResult;
-        $result->modifyFields($params['fields']);
-        return $result;
-    }
-
-    final public static function onBeforeUpdate(Event $event)
-    {
-        $params = $event->getParameters();
-        static::beforeUpdate($params);
-        $result = new EventResult;
-        $result->modifyFields($params['fields']);
-        return $result;
-    }
-
-    final public static function onAfterUpdate(Event $event)
-    {
-        $params = $event->getParameters();
-        static::afterUpdate($params);
-        $event->setParameters($params);
-    }
-
-    final public static function onAfterDelete(Event $event)
-    {
-        $params = $event->getParameters();
-        static::afterDelete($params);
-        $event->setParameters($params);
-    }
-
-    protected static function beforeCreate(&$arFields)
-    { }
-
-    protected static function afterCreate(&$arFields)
-    { }
-
-    protected static function beforeUpdate(&$arParams)
-    { }
-
-    protected static function afterUpdate(&$arFields)
-    { }
-
-    protected static function afterDelete($arFields)
-    { }
-
-    public function __construct(array $data)
-    {
-        $this->props = $data;
-    }
 
     /**
      * @return DataManager|null
@@ -118,18 +29,32 @@ abstract class BaseHlModel extends BaseModel
             return static::$entity[static::getTableName()];
         }
 
-        Loader::includeModule('highloadblock');
-        $hlBlock = HighloadBlockTable::getList([
-            'filter' => [
-                'TABLE_NAME' => static::getTableName(),
-            ],
-            'limit' => 1,
-        ])->fetch();
+        $hlBlock = static::getHlBlock();
         if (!$hlBlock) {
             return null;
         }
 
         return static::$entity[static::getTableName()] = HighloadBlockTable::compileEntity($hlBlock)->getDataClass();
+    }
+
+    /**
+     * @return array|null
+     */
+    protected static function getHlBlock()
+    {
+        if (!is_null(static::$hlblock[static::getTableName()])) {
+            return static::$hlblock[static::getTableName()];
+        }
+
+        Loader::includeModule('highloadblock');
+        $hlBlock = HighloadBlockTable::getList([
+            'filter' => [
+                '=TABLE_NAME' => static::getTableName(),
+            ],
+            'limit' => 1,
+        ])->fetch();
+        
+        return static::$hlblock[static::getTableName()] = $hlBlock;
     }
 
     public static function getList(array $params)

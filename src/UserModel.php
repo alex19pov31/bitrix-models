@@ -4,10 +4,12 @@ namespace Alex19pov31\BitrixModel;
 
 use CUser;
 use Alex19pov31\BitrixModel\Traits\UserTrait;
+use Alex19pov31\BitrixModel\Traits\UserEventTrait;
 
 class UserModel extends BaseModel
 {
     use UserTrait;
+    use UserEventTrait;
 
     protected $props = [];
     protected static $ttl = 180;
