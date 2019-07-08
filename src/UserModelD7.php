@@ -13,12 +13,12 @@ class UserModelD7 extends BaseDataManagerModel
     use UserTrait;
     use UserEventTrait;
 
-    const TTL = 180;
+    protected static $ttl = 180;
     private static $entity;
 
     protected static function getCacheMinutes(): int
     {
-        return static::TTL;
+        return (int) static::$ttl;
     }
 
     /**
