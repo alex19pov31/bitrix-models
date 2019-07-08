@@ -39,7 +39,7 @@ trait IblockTrait
     public static function getPropertiesInfo(array $select = []): BaseModelCollection
     {
         $id = static::getIblockId();
-        if (empty($select) && static::$properties[$id] instanceof IblockModel) {
+        if (empty($select) && static::$properties[$id] instanceof BaseModelCollection) {
             return static::$properties[$id];
         }
 

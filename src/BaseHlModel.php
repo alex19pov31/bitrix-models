@@ -5,13 +5,12 @@ namespace Alex19pov31\BitrixModel;
 use Alex19pov31\BitrixModel\Exceptions\ExceptionAddElementHlBlock;
 use Alex19pov31\BitrixModel\Exceptions\ExceptionUpdateElementHlBlock;
 use Bitrix\Main\ORM\Data\AddResult;
-use Bitrix\Main\EventManager;
-use Bitrix\Main\Loader;
-use Bitrix\Main\ORM\EventResult;
 use Alex19pov31\BitrixModel\Traits\HlEventTrait;
+use Alex19pov31\BitrixModel\Traits\HlTrait;
 
 abstract class BaseHlModel extends BaseModel
 {
+    use HlTrait;
     use HlEventTrait;
 
     protected $props = [];
@@ -35,26 +34,6 @@ abstract class BaseHlModel extends BaseModel
         }
 
         return static::$entity[static::getTableName()] = HighloadBlockTable::compileEntity($hlBlock)->getDataClass();
-    }
-
-    /**
-     * @return array|null
-     */
-    protected static function getHlBlock()
-    {
-        if (!is_null(static::$hlblock[static::getTableName()])) {
-            return static::$hlblock[static::getTableName()];
-        }
-
-        Loader::includeModule('highloadblock');
-        $hlBlock = HighloadBlockTable::getList([
-            'filter' => [
-                '=TABLE_NAME' => static::getTableName(),
-            ],
-            'limit' => 1,
-        ])->fetch();
-        
-        return static::$hlblock[static::getTableName()] = $hlBlock;
     }
 
     public static function getList(array $params)
