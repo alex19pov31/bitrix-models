@@ -1,6 +1,6 @@
 <?php
 
-namespace Alex19pov31\BitrixModel\Traits;
+namespace Alex19pov31\BitrixModel\Traits\Iblock;
 
 use Bitrix\Iblock\InheritedProperty\ElementValues;
 use Bitrix\Main\Loader;

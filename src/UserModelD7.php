@@ -2,11 +2,11 @@
 
 namespace Alex19pov31\BitrixModel;
 
-use Bitrix\Main\ORM\Data\DataManager;
 use Alex19pov31\BitrixModel\BaseModelCollection;
+use Alex19pov31\BitrixModel\Traits\User\UserEventTrait;
+use Alex19pov31\BitrixModel\Traits\User\UserTrait;
+use Bitrix\Main\ORM\Data\DataManager;
 use Bitrix\Main\UserTable;
-use Alex19pov31\BitrixModel\Traits\UserTrait;
-use Alex19pov31\BitrixModel\Traits\UserEventTrait;
 
 class UserModelD7 extends BaseDataManagerModel
 {

@@ -2,8 +2,6 @@
 
 namespace Alex19pov31\BitrixModel\InternalModels;
 
-use Alex19pov31\BitrixModel\BaseDataManagerModel;
-use Bitrix\Main\UserFieldTable;
 use Alex19pov31\BitrixModel\TableModel;
 
 class HlPropertyEnumModel extends TableModel

@@ -1,12 +1,13 @@
 <?php
 namespace Alex19pov31\BitrixModel;
 
-use Bitrix\Main\ORM\Data\DataManager;
-use Alex19pov31\BitrixModel\Traits\IblockTrait;
-use Alex19pov31\BitrixModel\Traits\IblockSeoTrait;
-use Alex19pov31\BitrixModel\Traits\IblockFeatureTrait;
-use Alex19pov31\BitrixModel\Traits\IblockEventTrait;
 use Alex19pov31\BitrixModel\Entity\IblockElementTable;
+use Alex19pov31\BitrixModel\Traits\Iblock\IblockComponentTrait;
+use Alex19pov31\BitrixModel\Traits\Iblock\IblockEventTrait;
+use Alex19pov31\BitrixModel\Traits\Iblock\IblockFeatureTrait;
+use Alex19pov31\BitrixModel\Traits\Iblock\IblockSeoTrait;
+use Alex19pov31\BitrixModel\Traits\Iblock\IblockTrait;
+use Bitrix\Main\ORM\Data\DataManager;
 
 abstract class BaseIblockModelD7 extends BaseDataManagerModel
 {
@@ -14,6 +15,7 @@ abstract class BaseIblockModelD7 extends BaseDataManagerModel
     use IblockSeoTrait;
     use IblockFeatureTrait;
     use IblockEventTrait;
+    use IblockComponentTrait;
 
     abstract protected static function getIblockId(): int;
     abstract protected static function getCacheMinutes(): int;
@@ -23,7 +25,7 @@ abstract class BaseIblockModelD7 extends BaseDataManagerModel
      */
     protected static function getEntity()
     {
-        return IblockElementTable:: class;
+        return IblockElementTable::class;
     }
 
     public static function getListCollection(array $params = [], $keyBy = null): BaseModelCollection

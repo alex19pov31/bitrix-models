@@ -1,6 +1,6 @@
 <?php
 
-namespace Alex19pov31\BitrixModel\Traits;
+namespace Alex19pov31\BitrixModel\Traits\Section;
 
 use Bitrix\Iblock\InheritedProperty\SectionValues;
 use Bitrix\Main\Loader;

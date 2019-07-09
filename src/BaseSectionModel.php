@@ -2,10 +2,10 @@
 
 namespace Alex19pov31\BitrixModel;
 
-use CIBlockSection;
+use Alex19pov31\BitrixModel\Traits\Section\SectionSeoTrait;
+use Alex19pov31\BitrixModel\Traits\Section\SectionTrait;
 use CIBlockResult;
-use Alex19pov31\BitrixModel\Traits\SectionTrait;
-use Alex19pov31\BitrixModel\Traits\SectionSeoTrait;
+use CIBlockSection;
 
 abstract class BaseSectionModel extends BaseModel
 {

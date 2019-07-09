@@ -1,6 +1,6 @@
 <?php
 
-namespace Alex19pov31\BitrixModel\Traits;
+namespace Alex19pov31\BitrixModel\Traits\Hl;
 
 use Alex19pov31\BitrixModel\InternalModels\HlModel;
 use Alex19pov31\BitrixModel\BaseModelCollection;

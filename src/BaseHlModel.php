@@ -4,9 +4,9 @@ namespace Alex19pov31\BitrixModel;
 
 use Alex19pov31\BitrixModel\Exceptions\ExceptionAddElementHlBlock;
 use Alex19pov31\BitrixModel\Exceptions\ExceptionUpdateElementHlBlock;
+use Alex19pov31\BitrixModel\Traits\Hl\HlEventTrait;
+use Alex19pov31\BitrixModel\Traits\Hl\HlTrait;
 use Bitrix\Main\ORM\Data\AddResult;
-use Alex19pov31\BitrixModel\Traits\HlEventTrait;
-use Alex19pov31\BitrixModel\Traits\HlTrait;
 
 abstract class BaseHlModel extends BaseModel
 {

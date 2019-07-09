@@ -1,15 +1,16 @@
 <?php
 namespace Alex19pov31\BitrixModel;
 
-use CIBlockElement;
-use CIBlockResult;
 use Alex19pov31\BitrixModel\Exceptions\ExceptionAddElementIblock;
 use Alex19pov31\BitrixModel\Exceptions\ExceptionUpdateElementIblock;
+use Alex19pov31\BitrixModel\Traits\Iblock\IblockComponentTrait;
+use Alex19pov31\BitrixModel\Traits\Iblock\IblockEventTrait;
+use Alex19pov31\BitrixModel\Traits\Iblock\IblockFeatureTrait;
+use Alex19pov31\BitrixModel\Traits\Iblock\IblockSeoTrait;
+use Alex19pov31\BitrixModel\Traits\Iblock\IblockTrait;
 use Bitrix\Main\Loader;
-use Alex19pov31\BitrixModel\Traits\IblockTrait;
-use Alex19pov31\BitrixModel\Traits\IblockSeoTrait;
-use Alex19pov31\BitrixModel\Traits\IblockFeatureTrait;
-use Alex19pov31\BitrixModel\Traits\IblockEventTrait;
+use CIBlockElement;
+use CIBlockResult;
 
 abstract class BaseIblockModel extends BaseModel
 {
@@ -17,6 +18,7 @@ abstract class BaseIblockModel extends BaseModel
     use IblockSeoTrait;
     use IblockFeatureTrait;
     use IblockEventTrait;
+    use IblockComponentTrait;
 
     abstract protected static function getIblockId(): int;
     abstract protected static function getCacheMinutes(): int;
@@ -24,19 +26,19 @@ abstract class BaseIblockModel extends BaseModel
     public static function getList(array $params = []): CIBlockResult
     {
         Loader::includeModule('iblock');
-        $order = (array)$params['order'];
-        $select = (array)$params['select'];
+        $order = (array) $params['order'];
+        $select = (array) $params['select'];
 
         $nav = false;
-        if ((int)$params['limit'] > 0) {
+        if ((int) $params['limit'] > 0) {
             $nav['nPageSize'] = $params['limit'];
         }
 
-        if ((int)$params['offset'] > 0) {
-            $nav['iNumPage'] = (int)$params['offset'] ? ceil($params['offset'] / $params['limit']) : 1;
+        if ((int) $params['offset'] > 0) {
+            $nav['iNumPage'] = (int) $params['offset'] ? ceil($params['offset'] / $params['limit']) : 1;
         }
 
-        $filter = (array)$params['filter'];
+        $filter = (array) $params['filter'];
         $filter['IBLOCK_ID'] = static::getIblockId();
 
         return CIBlockElement::GetList($order, $filter, false, $nav, $select);
@@ -120,7 +122,7 @@ abstract class BaseIblockModel extends BaseModel
         $data['ID'] = $el->Add($fields);
 
         if (!empty($el->LAST_ERROR)) {
-            throw new ExceptionAddElementIblock((int)$fields['IBLOCK_ID'], $el->LAST_ERROR);
+            throw new ExceptionAddElementIblock((int) $fields['IBLOCK_ID'], $el->LAST_ERROR);
         }
 
         return new static($data);
@@ -142,7 +144,7 @@ abstract class BaseIblockModel extends BaseModel
         $el->Update($id, $fields);
 
         if (!empty($el->LAST_ERROR)) {
-            throw new ExceptionUpdateElementIblock((int)$fields['IBLOCK_ID'], $el->LAST_ERROR);
+            throw new ExceptionUpdateElementIblock((int) $fields['IBLOCK_ID'], $el->LAST_ERROR);
         }
 
         return new static([]);
@@ -157,7 +159,7 @@ abstract class BaseIblockModel extends BaseModel
     public static function delete(int $id): bool
     {
         Loader::includeModule('iblock');
-        return (bool)CIBlockElement::Delete($id);
+        return (bool) CIBlockElement::Delete($id);
     }
 
     public static function deactive(array $filter)
