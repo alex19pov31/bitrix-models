@@ -4,7 +4,7 @@ namespace Alex19pov31\BitrixModel\InternalModels;
 
 use Alex19pov31\BitrixModel\TableModel;
 
-class HlPropertyEnumModel extends TableModel
+class UserFieldEnumModel extends TableModel
 {
     const TTL = 180;
 

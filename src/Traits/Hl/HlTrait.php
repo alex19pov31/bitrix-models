@@ -4,7 +4,7 @@ namespace Alex19pov31\BitrixModel\Traits\Hl;
 
 use Alex19pov31\BitrixModel\InternalModels\HlModel;
 use Alex19pov31\BitrixModel\BaseModelCollection;
-use Alex19pov31\BitrixModel\InternalModels\HlPropertyModel;
+use Alex19pov31\BitrixModel\InternalModels\UserFieldModel;
 
 trait HlTrait
 {
@@ -50,7 +50,7 @@ trait HlTrait
             return new BaseModelCollection([], HlModel::class);
         }
 
-        return static::$properties[$tableName] = HlPropertyModel::getListCollection([
+        return static::$properties[$tableName] = UserFieldModel::getListCollection([
             'filter' => [
                 '=ENTITY_ID' => 'HLBLOCK_'.$hlBlock->getId(),
             ],

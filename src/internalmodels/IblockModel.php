@@ -11,6 +11,8 @@ class IblockModel extends BaseDataManagerModel
 {
     const TTL = 180;
 
+    protected $properties;
+
     protected static function getCacheMinutes(): int
     {
         return static::TTL;
@@ -23,6 +25,47 @@ class IblockModel extends BaseDataManagerModel
     {
         Loader::includeModule('iblock');
         return IblockTable::class;
+    }
+
+    /**
+     * Информация о доп. свойствах инфоблока
+     *
+     * @param array $select
+     * @return BaseModelCollection
+     */
+    public static function getAdditionalPropertiesInfo(array $select = []): BaseModelCollection
+    {
+        if (empty($select) && static::$properties instanceof BaseModelCollection) {
+            return static::$properties;
+        }
+
+        return static::$properties = UserFieldModel::getListCollection([
+            'filter' => [
+                '=ENTITY_ID' => 'ASD_IBLOCK',
+            ],
+            'select' => $select,
+        ]);
+    }
+
+    /**
+     * Знаечния доп. свойств инфоблока
+     *
+     * @param array $select
+     * @return BaseModelCollection
+     */
+    public static function getAdditionalPropertyValues(array $select = []): BaseModelCollection
+    {
+        $id = $this->getId();
+        if (empty($select) && static::$propertiesValue[$id] instanceof BaseModelCollection) {
+            return static::$propertiesValue[$id];
+        }
+
+        return static::$propertiesValue[$id] = IblockAsdMoldel::getListCollection([
+            'filter' => [
+                '=VALUE_ID' => $this->getId(),
+            ],
+            'select' => $select,
+        ]);
     }
 
     public function getIblockType(): string

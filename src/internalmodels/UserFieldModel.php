@@ -6,7 +6,7 @@ use Alex19pov31\BitrixModel\BaseDataManagerModel;
 use Bitrix\Main\UserFieldTable;
 use Alex19pov31\BitrixModel\BaseModelCollection;
 
-class HlPropertyModel extends BaseDataManagerModel
+class UserFieldModel extends BaseDataManagerModel
 {
     const TTL = 180;
     protected $enum;
@@ -85,7 +85,7 @@ class HlPropertyModel extends BaseDataManagerModel
             return $this->enum;
         }
 
-        return $this->enum = HlPropertyEnumModel::getListCollection([
+        return $this->enum = UserFieldEnumModel::getListCollection([
             'filter' => [
                 '=USER_FIELD_ID' => $this->getId(),
             ],

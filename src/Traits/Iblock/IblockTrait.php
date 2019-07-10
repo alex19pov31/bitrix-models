@@ -31,7 +31,7 @@ trait IblockTrait
     }
 
     /**
-     * Информация о свойствах инфоблока
+     * Информация о свойствах элемента инфоблока
      *
      * @param array $select
      * @return BaseModelCollection
