@@ -2,6 +2,8 @@
 
 namespace Alex19pov31\BitrixModel;
 
+use Alex19pov31\BitrixModel\Traits\Iblock\SectionComponentTrait;
+use Alex19pov31\BitrixModel\Traits\Iblock\SectionEventTrait;
 use Alex19pov31\BitrixModel\Traits\Section\SectionSeoTrait;
 use Alex19pov31\BitrixModel\Traits\Section\SectionTrait;
 use CIBlockResult;
@@ -11,6 +13,8 @@ abstract class BaseSectionModel extends BaseModel
 {
     use SectionTrait;
     use SectionSeoTrait;
+    use SectionEventTrait;
+    use SectionComponentTrait;
 
     abstract protected static function getIblockId(): int;
     abstract protected static function getCacheMinutes(): int;

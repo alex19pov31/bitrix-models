@@ -3,10 +3,14 @@
 namespace Alex19pov31\BitrixModel\Traits\Section;
 
 use DateTime;
+use Alex19pov31\BitrixModel\BaseModelCollection;
+use Alex19pov31\BitrixModel\InternalModels\UserFieldModel;
 
 trait SectionTrait
 {
+    protected static $properties;
 
+    abstract protected static function getIblockId(): int;
     /**
      * Название элемента
      *
@@ -125,5 +129,35 @@ trait SectionTrait
     public function getParentId(): int
     {
         return (int) $this['SECTION_ID'];
+    }
+
+    public function getPropertiesInfo(): BaseModelCollection
+    {
+        $iblockId = static::getIblockId();
+        if (static::$properties[$iblockId] instanceof BaseModelCollection) {
+            return static::$properties[$iblockId];
+        }
+
+        return static::$properties[$iblockId] = UserFieldModel::getListCollection([
+            'filter' => [
+                '=ENTITY_ID' => 'IBLOCK_'.$iblockId.'_SECTION',
+            ],
+        ]);
+    }
+    
+    /**
+     * Информация о инфоблоке
+     *
+     * @param array $select
+     * @return IblockModel|null
+     */
+    public static function getIblock(array $select = [])
+    {
+        $id = static::getIblockId();
+        if (empty($select) && static::$iblock[$id] instanceof IblockModel) {
+            return static::$iblock[$id];
+        }
+        
+        return static::$iblock[$id] = IblockModel::getById($id, $select);
     }
 }

@@ -38,7 +38,7 @@ trait HlTrait
     {
         
         $tableName = static::getTableName();
-        if (empty($select) && static::$properties[$tableName] instanceof BaseModelCollection) {
+        if (static::$properties[$tableName] instanceof BaseModelCollection) {
             return static::$properties[$tableName];
         }
 
@@ -46,8 +46,8 @@ trait HlTrait
          * @var HlModel $hlBlock
          */
         $hlBlock = static::getHlBlock();
-        if ($hlBlock) {
-            return new BaseModelCollection([], HlModel::class);
+        if (!$hlBlock) {
+            return new BaseModelCollection([], UserFieldModel::class);
         }
 
         return static::$properties[$tableName] = UserFieldModel::getListCollection([

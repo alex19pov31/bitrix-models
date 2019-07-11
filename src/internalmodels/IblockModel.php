@@ -11,7 +11,8 @@ class IblockModel extends BaseDataManagerModel
 {
     const TTL = 180;
 
-    protected $properties;
+    protected static $properties;
+    protected static $propertiesValue;
 
     protected static function getCacheMinutes(): int
     {

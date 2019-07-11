@@ -23,7 +23,7 @@ abstract class BaseIblockModel extends BaseModel
     abstract protected static function getIblockId(): int;
     abstract protected static function getCacheMinutes(): int;
 
-    public static function getList(array $params = []): CIBlockResult
+    protected static function getList(array $params = []): CIBlockResult
     {
         Loader::includeModule('iblock');
         $order = (array) $params['order'];
