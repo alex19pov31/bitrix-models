@@ -129,7 +129,7 @@ class IblockModel extends BaseDataManagerModel
         return (int)$this['PICTURE'];
     }
 
-    public function getPictureSrc($width = null, $height = null): string
+    public function getIblockPictureSrc($width = null, $height = null): string
     {
         return static::getPictureSrc($this->getPicture(), $width, $height);
     }

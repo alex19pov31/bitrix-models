@@ -1,6 +1,7 @@
 <?php
 
 namespace Alex19pov31\BitrixModel;
+use CFile;
 
 abstract class BaseModel implements \ArrayAccess
 {
@@ -78,12 +79,16 @@ abstract class BaseModel implements \ArrayAccess
      */
     public static function getById(int $id, array $select = [])
     {
-        return static::getListCollection([
+        $params = [
             'filter' => [
                 '=ID' => $id,
             ],
-            'select' => $select,
-        ])->current();
+        ];
+        if (!empty($select)) {
+            $params['select'] = $select;
+        }
+
+        return static::getListCollection($params)->current();
     }
 
 
@@ -102,7 +107,7 @@ abstract class BaseModel implements \ArrayAccess
         }
 
         if (!$width && !$height) {
-            return $this->getFileSrc($fileId);
+            return static::getFileSrc($fileId);
         }
 
         $size = [];
@@ -122,7 +127,7 @@ abstract class BaseModel implements \ArrayAccess
      * @param integer $fileId
      * @return string
      */
-    public function getFileSrc(int $fileId): string
+    public static function getFileSrc(int $fileId): string
     {
         if (!$fileId) {
             return '';

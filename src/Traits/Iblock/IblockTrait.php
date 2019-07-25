@@ -13,6 +13,7 @@ trait IblockTrait
     protected static $properties;
 
     abstract public static function getIblockId(): int;
+    abstract public static function getPictureSrc(int $fileId, int $width = 0, int $height = 0): string;
 
     /**
      * Информация о инфоблоке
@@ -94,11 +95,11 @@ trait IblockTrait
     /**
      * Картинка для предпросмотра
      *
-     * @param integer|null $width
-     * @param integer|null $height
+     * @param integer $width
+     * @param integer $height
      * @return string
      */
-    public function getPreviewPictureSrc($width = null, $height = null): string
+    public function getPreviewPictureSrc(int $width = 0, int $height = 0): string
     {
         return static::getPictureSrc((int)$this['PREVIEW_PICTURE'], $width, $height);
     }
@@ -106,11 +107,11 @@ trait IblockTrait
     /**
      * Детальная картинка
      *
-     * @param integer|null $width
-     * @param integer|null $height
+     * @param integer $width
+     * @param integer $height
      * @return string
      */
-    public function getDetailPictureSrc($width = null, $height = null): string
+    public function getDetailPictureSrc(int $width = 0, int $height = 0): string
     {
         return static::getPictureSrc((int)$this['DETAIL_PICTURE'], $width, $height);
     }

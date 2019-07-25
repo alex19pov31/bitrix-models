@@ -66,7 +66,7 @@ trait SectionTrait
         return (int) $this['DETAIL_PICTURE'];
     }
 
-    public function getDetailPictureSrc($width = null, $height = null): string
+    public function getDetailPictureSrc(int $width = 0, int $height = 0): string
     {
         return $this->getPictureSrc($this->getDetailPicture(), $width, $height);
     }
@@ -76,7 +76,7 @@ trait SectionTrait
         return (int) $this['PICTURE'];
     }
 
-    public function getPictureSrc($width = null, $height = null): string
+    public function getPictureSrc(int $width = 0, int $height = 0): string
     {
         return $this->getPictureSrc($this->getPicture(), $width, $height);
     }

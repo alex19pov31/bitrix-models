@@ -8,6 +8,7 @@ use Alex19pov31\BitrixModel\Traits\Iblock\IblockFeatureTrait;
 use Alex19pov31\BitrixModel\Traits\Iblock\IblockSeoTrait;
 use Alex19pov31\BitrixModel\Traits\Iblock\IblockTrait;
 use Bitrix\Main\ORM\Data\DataManager;
+use Alex19pov31\BitrixModel\Entity\IblockNewElementTable;
 
 abstract class BaseIblockModelD7 extends BaseDataManagerModel
 {
@@ -18,13 +19,16 @@ abstract class BaseIblockModelD7 extends BaseDataManagerModel
     use IblockComponentTrait;
 
     abstract protected static function getIblockId(): int;
-    abstract protected static function getCacheMinutes(): int;
 
     /**
      * @return DataManager
      */
     protected static function getEntity()
     {
+        if (static::getIblock()->getVersion() == 2) {
+            return IblockNewElementTable::class;
+        }
+        
         return IblockElementTable::class;
     }
 

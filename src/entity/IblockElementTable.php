@@ -14,9 +14,11 @@ use Bitrix\Main\ORM\Data\UpdateResult;
 use CFile;
 use Bitrix\Iblock\SectionTable;
 use Bitrix\Highloadblock\HighloadBlockTable;
+use Bitrix\Iblock\PropertyEnumerationTable;
 
 class IblockElementTable extends ElementTable
 {
+    private static $extEntity;
     private static $propertyList;
 
     public static function getMap()
@@ -51,7 +53,10 @@ class IblockElementTable extends ElementTable
          * @var AddResult $result
          * @var AddResult $mainResult
          */
-        $mainResult = parent::add($fields);
+        $mainResult = static::getDataManager('b_iblock_element')::add([
+                'fields' => $fields,
+            ]
+        );
         if (!$mainResult->isSuccess()) {
             appInstance()->getConnection()->rollbackTransaction();
             return $mainResult;
@@ -97,7 +102,7 @@ class IblockElementTable extends ElementTable
          * @var UpdateResult $result
          */
         appInstance()->getConnection()->startTransaction();
-        $mainResult = parent::update($primary, $fields);
+        $mainResult = static::getDataManager('b_iblock_element')::update($primary, $fields);
         if (!$mainResult->isSuccess()) {
             appInstance()->getConnection()->rollbackTransaction();
             return $mainResult;
@@ -107,7 +112,7 @@ class IblockElementTable extends ElementTable
         $iblockId = (int)$data['IBLOCK_ID'];
         foreach($props as $code => $value) {
             $valueId = (int)$propertyValues[$code]['ID'];
-            if ($valueId) {
+            if (!$valueId) {
                 if (!$iblockId) {
                     continue;
                 }
@@ -302,6 +307,20 @@ class IblockElementTable extends ElementTable
             ])->fetch();
         }
 
+        if ($property['PROPERTY_TYPE'] == PropertyTable::TYPE_LIST) {
+            Loader::includeModule('iblock');
+            return PropertyEnumerationTable::getList([
+                'filter' => [
+                    '=ID' => $value,
+                    '=PROPERTY_ID' => $property['ID'],
+                ],
+                'limit' => 1,
+                'cache' => [
+                    'ttl' => $ttl,
+                ],
+            ])->fetch();
+        }
+
         if ($property['PROPERTY_TYPE'] == PropertyTable::TYPE_STRING && 
             $property['USER_TYPE'] == 'directory') {
             Loader::includeModule('highloadblock');
@@ -339,16 +358,12 @@ class IblockElementTable extends ElementTable
         return $value;
     }
 
-    public static function getList(array $parameters = array())
+    private static function getExtEntity(int $iblockId, array $parameters): Entity
     {
-        $filter = $parameters['filter'];
-        $iblockId = (int) $filter['IBLOCK_ID'];
-        if (!$iblockId) {
-            return parent::getList($parameters);
+        if (static::$extEntity[$iblockId]) {
+            return static::$extEntity[$iblockId];
         }
-
-        $parameters['filter'] = static::prepareFilter($parameters['filter']);
-        $parameters['group'] = $parameters['group'] ? array_merge(['ID'], $parameters['group']) : ['ID'];
+        
         Loader::includeModule('iblock');
         $propertyList = PropertyTable::getList([
             'filter' => [
@@ -413,6 +428,22 @@ class IblockElementTable extends ElementTable
             });
         }
 
+        return $entity;
+    }
+
+    public static function getList(array $parameters = array())
+    {
+        $filter = $parameters['filter'];
+        $iblockId = (int) $filter['IBLOCK_ID'];
+        if (!$iblockId) {
+            return parent::getList($parameters);
+        }
+
+        $parameters['filter'] = static::prepareFilter($parameters['filter']);
+        $parameters['group'] = $parameters['group'] ? array_merge(['ID'], $parameters['group']) : ['ID'];
+        
+
+        $entity = static::getExtEntity($iblockId, $parameters);
         $query = new Query($entity);
         if (!isset($parameters['select'])) {
             $query->setSelect(array('*'));
