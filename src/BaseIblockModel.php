@@ -44,6 +44,13 @@ abstract class BaseIblockModel extends BaseModel
         return CIBlockElement::GetList($order, $filter, false, $nav, $select);
     }
 
+    public static function getCount(array $filter = []): int
+    {
+        return (int) static::getList([
+          'filter' => $filter,  
+        ])->SelectedRowsCount();
+    }
+
     public static function getListCollection(array $params = [], $keyBy = null): BaseModelCollection
     {
         $key = static::class . '_' . md5(json_encode($params));

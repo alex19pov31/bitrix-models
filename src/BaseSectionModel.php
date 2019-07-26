@@ -108,6 +108,13 @@ abstract class BaseSectionModel extends BaseModel
         return [];
     }
 
+    public static function getCount(array $filter = []): int
+    {
+        return (int) static::getList([
+          'filter' => $filter,  
+        ])->SelectedRowsCount();
+    }
+
     public static function getListCollection(array $params = [], $keyBy = null): BaseModelCollection
     {
         $key = static::class . '_' . md5(json_encode($params));

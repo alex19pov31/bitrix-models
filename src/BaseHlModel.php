@@ -50,7 +50,7 @@ abstract class BaseHlModel extends BaseModel
     {
         if ($keyBy === null) {
             $list = static::getList($params)->fetchAll();
-            return new BaseModelCollection($list, static::class);
+            return new BaseModelCollection($list, static::class, $params);
         }
 
         $list = [];
@@ -64,7 +64,7 @@ abstract class BaseHlModel extends BaseModel
             $list[$key] = $item;
         }
 
-        return new BaseModelCollection($list, static::class);
+        return new BaseModelCollection($list, static::class, $params);
     }
 
     public static function add(array $data): BaseModel

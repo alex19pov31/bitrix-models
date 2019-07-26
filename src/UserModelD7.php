@@ -39,6 +39,6 @@ class UserModelD7 extends BaseDataManagerModel
             $params['select'] = ['*', 'UF_*'];
         }
 
-        return parent::getListCollection($params, $keyBy);
+        return parent::getListCollection($params, $keyBy, $params);
     }
 }

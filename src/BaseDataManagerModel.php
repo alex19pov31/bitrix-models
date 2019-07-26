@@ -13,6 +13,11 @@ abstract class BaseDataManagerModel extends BaseModel
      */
     abstract protected static function getEntity();
 
+    public static function getCount(array $filter = []): int
+    {
+        return (int) static::getEntity()::getCount($filter);
+    }
+
     public static function getListCollection(array $params = [], $keyBy = null): BaseModelCollection
     {
         $list = [];
@@ -26,7 +31,7 @@ abstract class BaseDataManagerModel extends BaseModel
             $list[$key] = $item;
         }
 
-        return new BaseModelCollection($list, static::class);
+        return new BaseModelCollection($list, static::class, $params);
     }
 
     /**

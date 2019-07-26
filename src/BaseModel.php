@@ -19,6 +19,7 @@ abstract class BaseModel implements \ArrayAccess
      * @return BaseModelCollection
      */
     abstract public static function getListCollection(array $params = [], $keyBy = null): BaseModelCollection;
+    abstract public static function getCount(array $filter = []): int;
 
     /**
      * Добавление элемента
