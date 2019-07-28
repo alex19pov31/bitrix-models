@@ -4,7 +4,7 @@ namespace Alex19pov31\BitrixModel\Traits\Iblock;
 
 use DateTime;
 use Alex19pov31\BitrixModel\InternalModels\IblockModel;
-use Alex19pov31\BitrixModel\Models\IblockPropertyModel;
+use Alex19pov31\BitrixModel\InternalModels\IblockPropertyModel;
 use Alex19pov31\BitrixModel\BaseModelCollection;
 
 trait IblockTrait

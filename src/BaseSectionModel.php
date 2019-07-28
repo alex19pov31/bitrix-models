@@ -8,6 +8,8 @@ use Alex19pov31\BitrixModel\Traits\Section\SectionSeoTrait;
 use Alex19pov31\BitrixModel\Traits\Section\SectionTrait;
 use CIBlockResult;
 use CIBlockSection;
+use Alex19pov31\BitrixModel\Traits\SefUrlTrait;
+use Alex19pov31\BitrixModel\InternalModels\UserFieldModel;
 
 abstract class BaseSectionModel extends BaseModel
 {
@@ -15,9 +17,21 @@ abstract class BaseSectionModel extends BaseModel
     use SectionSeoTrait;
     use SectionEventTrait;
     use SectionComponentTrait;
+    use SefUrlTrait;
 
     abstract protected static function getIblockId(): int;
     abstract protected static function getCacheMinutes(): int;
+
+    protected function getPropertyCodeList(): array
+    {
+        $fields = appInstance()->getConnection()->getTableFields('b_iblock_section');
+        $propertyList = array_keys($fields);
+        $list = static::getPropertiesInfo([
+            'FIELD_NAME',
+        ])->column('FIELD_NAME');
+
+        return array_merge($propertyList, $list);
+    }
 
     /**
      * @return BaseIblockModel|null

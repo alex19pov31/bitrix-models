@@ -11,6 +11,8 @@ use Alex19pov31\BitrixModel\Traits\Iblock\IblockTrait;
 use Bitrix\Main\Loader;
 use CIBlockElement;
 use CIBlockResult;
+use Alex19pov31\BitrixModel\Traits\SefUrlTrait;
+use Alex19pov31\BitrixModel\InternalModels\IblockPropertyModel;
 
 abstract class BaseIblockModel extends BaseModel
 {
@@ -19,9 +21,23 @@ abstract class BaseIblockModel extends BaseModel
     use IblockFeatureTrait;
     use IblockEventTrait;
     use IblockComponentTrait;
+    use SefUrlTrait;
 
     abstract protected static function getIblockId(): int;
     abstract protected static function getCacheMinutes(): int;
+    
+    protected function getPropertyCodeList(): array
+    {
+        $fields = appInstance()->getConnection()->getTableFields('b_iblock_element');
+        $propertyList = array_keys($fields);
+        $list = static::getPropertiesInfo([
+            'CODE',
+        ])->addField('PROPERTY', function (IblockPropertyModel $prop) {
+            return 'PROPERTY_' . $prop->getCode();
+        })->column('PROPERTY');
+
+        return array_merge($propertyList, $list);
+    }
 
     protected static function getList(array $params = []): CIBlockResult
     {

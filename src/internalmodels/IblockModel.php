@@ -48,27 +48,6 @@ class IblockModel extends BaseDataManagerModel
         ]);
     }
 
-    /**
-     * Знаечния доп. свойств инфоблока
-     *
-     * @param array $select
-     * @return BaseModelCollection
-     */
-    public static function getAdditionalPropertyValues(array $select = []): BaseModelCollection
-    {
-        $id = $this->getId();
-        if (empty($select) && static::$propertiesValue[$id] instanceof BaseModelCollection) {
-            return static::$propertiesValue[$id];
-        }
-
-        return static::$propertiesValue[$id] = IblockAsdMoldel::getListCollection([
-            'filter' => [
-                '=VALUE_ID' => $this->getId(),
-            ],
-            'select' => $select,
-        ]);
-    }
-
     public function getIblockType(): string
     {
         return $this['IBLOCK_TYPE_ID'];

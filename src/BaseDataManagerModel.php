@@ -3,10 +3,19 @@
 namespace Alex19pov31\BitrixModel;
 
 use Bitrix\Main\ORM\Data\DataManager as BitrixDataManager;
+use Alex19pov31\BitrixModel\Traits\SefUrlTrait;
 
 abstract class BaseDataManagerModel extends BaseModel
 {
+    use SefUrlTrait;
+
     abstract protected static function getCacheMinutes(): int;
+
+    protected function getPropertyCodeList(): array
+    {
+        $fields = appInstance()->getConnection()->getTableFields(static::getEntity()->getTableName());
+        return array_keys($fields);
+    }
 
     /**
      * @return BitrixDataManager
