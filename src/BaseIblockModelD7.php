@@ -11,6 +11,7 @@ use Alex19pov31\BitrixModel\Traits\Iblock\IblockSeoTrait;
 use Alex19pov31\BitrixModel\Traits\Iblock\IblockTrait;
 use Alex19pov31\BitrixModel\Traits\SefUrlTrait;
 use Bitrix\Main\ORM\Data\DataManager;
+use Bitrix\Main\ORM\Entity;
 
 abstract class BaseIblockModelD7 extends BaseDataManagerModel
 {
@@ -22,6 +23,17 @@ abstract class BaseIblockModelD7 extends BaseDataManagerModel
     use SefUrlTrait;
 
     abstract protected static function getIblockId(): int;
+
+    public static function query(): Query
+    {
+        return new Query(
+            static::getEntity(),
+            static::class,
+            [
+                'IBLOCK_ID' => static::getIblockId(),
+            ]
+        );
+    }
 
     protected function getPropertyCodeList(): array
     {
@@ -46,6 +58,11 @@ abstract class BaseIblockModelD7 extends BaseDataManagerModel
         }
 
         return IblockElementTable::class;
+    }
+
+    protected static function getEntity(): Entity
+    {
+        return static::getDataManager()::getExtEntity(static::getIblockId(), []);
     }
 
     public static function getListCollection(array $params = [], $keyBy = null): BaseModelCollection

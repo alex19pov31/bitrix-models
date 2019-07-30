@@ -10,6 +10,7 @@ class Query extends \Bitrix\Main\ORM\Query\Query
      * @var BaseModel
      */
     private $modelClass;
+    private $defaultFilter;
 
     /**
      * Query constructor.
@@ -17,10 +18,23 @@ class Query extends \Bitrix\Main\ORM\Query\Query
      * @throws \Bitrix\Main\ArgumentException
      * @throws \Bitrix\Main\SystemException
      */
-    public function __construct($source, $modelClass)
+    public function __construct($source, $modelClass, array $defaultFilter = [])
     {
         parent::__construct($source);
         $this->modelClass = $modelClass;
+        $this->defaultFilter = $defaultFilter;
+    }
+
+    public function fetch(Main\Text\Converter $converter = null)
+    {
+        $this->updateFilter();
+        return parent::fetch($converter);
+    }
+
+    public function fetchAll(Main\Text\Converter $converter = null)
+    {
+        $this->updateFilter();
+        return parent::fetchAll($converter);
     }
 
     /**
@@ -30,12 +44,19 @@ class Query extends \Bitrix\Main\ORM\Query\Query
      */
     public function fetchObject()
     {
+        $this->updateFilter();
         $data = parent::fetch();
         if(!$data) {
             return null;
         }
 
         return new $this->modelClass($data);
+    }
+
+    private function updateFilter()
+    {
+        $filter = $this->getFilter();
+        $this->setFilter(array_merge($filter, $this->defaultFilter));
     }
 
     /**
@@ -45,6 +66,7 @@ class Query extends \Bitrix\Main\ORM\Query\Query
      */
     public function fetchCollection()
     {
+        $this->updateFilter();
         $data = parent::fetchAll();
         return new BaseModelCollection(
             $data,

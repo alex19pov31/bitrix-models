@@ -358,7 +358,7 @@ class IblockElementTable extends ElementTable
         return $value;
     }
 
-    private static function getExtEntity(int $iblockId, array $parameters): Entity
+    public static function getExtEntity(int $iblockId, array $parameters): Entity
     {
         if (static::$extEntity[$iblockId]) {
             return static::$extEntity[$iblockId];
