@@ -39,7 +39,7 @@ abstract class BaseIblockModelD7 extends BaseDataManagerModel
     /**
      * @return DataManager
      */
-    protected static function getEntity()
+    protected static function getDataManager()
     {
         if (static::getIblock()->getVersion() == 2) {
             return IblockNewElementTable::class;

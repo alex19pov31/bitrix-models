@@ -18,7 +18,7 @@ class IblockFeatureModel extends BaseDataManagerModel
     /**
      * @return BitrixDataManager
      */
-    protected static function getEntity()
+    protected static function getDataManager()
     {
         Loader::includeModule('iblock');
         return PropertyFeatureTable::class;

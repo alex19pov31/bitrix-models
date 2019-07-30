@@ -19,7 +19,7 @@ class UserFieldModel extends BaseDataManagerModel
     /**
      * @return BitrixDataManager
      */
-    protected static function getEntity()
+    protected static function getDataManager()
     {
         UserFieldTable::class;
     }
