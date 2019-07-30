@@ -12,7 +12,7 @@ abstract class TableModel extends BaseDataManagerModel
     abstract protected static function getTableName(): string;
     abstract protected static function getCacheMinutes(): int;
 
-    protected static function getEntity(): BitrixDataManager
+    protected static function getDataManager(): BitrixDataManager
     {
         $tableName = static::getTableName();
         if (static::$entityList[$tableName]) {

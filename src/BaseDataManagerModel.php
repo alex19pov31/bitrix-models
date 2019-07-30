@@ -2,35 +2,43 @@
 
 namespace Alex19pov31\BitrixModel;
 
+use Alex19pov31\BitrixModel\Traits\QueryTrait;
 use Bitrix\Main\ORM\Data\DataManager as BitrixDataManager;
 use Alex19pov31\BitrixModel\Traits\SefUrlTrait;
+use Bitrix\Main\ORM\Entity;
 
 abstract class BaseDataManagerModel extends BaseModel
 {
     use SefUrlTrait;
+    use QueryTrait;
 
     abstract protected static function getCacheMinutes(): int;
-
-    protected function getPropertyCodeList(): array
-    {
-        $fields = appInstance()->getConnection()->getTableFields(static::getEntity()->getTableName());
-        return array_keys($fields);
-    }
 
     /**
      * @return BitrixDataManager
      */
-    abstract protected static function getEntity();
+    abstract protected static function getDataManager();
+
+    protected function getPropertyCodeList(): array
+    {
+        $fields = appInstance()->getConnection()->getTableFields(static::getDataManager()->getTableName());
+        return array_keys($fields);
+    }
+
+    protected static function getEntity(): Entity
+    {
+        return static::getDataManager()::getEntity();
+    }
 
     public static function getCount(array $filter = []): int
     {
-        return (int) static::getEntity()::getCount($filter);
+        return (int) static::getDataManager()::getCount($filter);
     }
 
     public static function getListCollection(array $params = [], $keyBy = null): BaseModelCollection
     {
         $list = [];
-        $res = static::getEntity()::getList($params);
+        $res = static::getDataManager()::getList($params);
         while ($item = $res->fetch()) {
             if (!$keyBy || !isset($item[$keyBy])) {
                 $list[] = $item;
@@ -51,7 +59,7 @@ abstract class BaseDataManagerModel extends BaseModel
      */
     public static function add(array $data): BaseModel
     {
-        $result = static::getEntity()::add([
+        $result = static::getDataManager()::add([
             'fields' => $data,
         ]);
 
@@ -71,7 +79,7 @@ abstract class BaseDataManagerModel extends BaseModel
      */
     public static function update(int $id, array $data): BaseModel
     {
-        $result = static::getEntity()::update($id, $data);
+        $result = static::getDataManager()::update($id, $data);
         if (!$result->isSuccess()) {
             throw new \Exception(implode(' ', $result->getErrorMessages()));
         }
@@ -88,7 +96,7 @@ abstract class BaseDataManagerModel extends BaseModel
      */
     public static function delete(int $id): bool
     {
-        $result = static::getEntity()::delete($id);
+        $result = static::getDataManager()::delete($id);
         return $result->isSuccess();
     }
 }

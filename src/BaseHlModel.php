@@ -7,13 +7,19 @@ use Alex19pov31\BitrixModel\Exceptions\ExceptionUpdateElementHlBlock;
 use Alex19pov31\BitrixModel\Traits\Hl\HlComponentTrait;
 use Alex19pov31\BitrixModel\Traits\Hl\HlEventTrait;
 use Alex19pov31\BitrixModel\Traits\Hl\HlTrait;
+use Alex19pov31\BitrixModel\Traits\QueryTrait;
+use Alex19pov31\BitrixModel\Traits\SefUrlTrait;
 use Bitrix\Main\ORM\Data\AddResult;
+use Bitrix\Main\ORM\Data\DataManager;
+use Bitrix\Main\ORM\Entity;
 
 abstract class BaseHlModel extends BaseModel
 {
     use HlTrait;
     use HlEventTrait;
     use HlComponentTrait;
+    use QueryTrait;
+    use SefUrlTrait;
 
     protected $props = [];
     protected static $entity;
@@ -24,7 +30,7 @@ abstract class BaseHlModel extends BaseModel
     /**
      * @return DataManager|null
      */
-    private static function getEntity()
+    private static function getDataManager()
     {
         if (!is_null(static::$entity[static::getTableName()])) {
             return static::$entity[static::getTableName()];
@@ -38,12 +44,23 @@ abstract class BaseHlModel extends BaseModel
         return static::$entity[static::getTableName()] = HighloadBlockTable::compileEntity($hlBlock)->getDataClass();
     }
 
+    protected static function getEntity(): Entity
+    {
+        static::getDataManager()::getEntity();
+    }
+
+    protected function getPropertyCodeList(): array
+    {
+        $fields = appInstance()->getConnection()->getTableFields(static::getDataManager()->getTableName());
+        return array_keys($fields);
+    }
+
     public static function getList(array $params)
     {
         $params['cache'] = [
             'ttl' => static::getCacheMinutes() * 60,
         ];
-        return static::getEntity()::getList($params);
+        return static::getDataManager()::getList($params);
     }
 
     public static function getListCollection(array $params = [], $keyBy = null): BaseModelCollection
@@ -69,7 +86,7 @@ abstract class BaseHlModel extends BaseModel
 
     public static function add(array $data): BaseModel
     {
-        $result = static::getEntity()::add($data);
+        $result = static::getDataManager()::add($data);
         if (!$result->isSuccess()) {
             throw new ExceptionAddElementHlBlock(
                 static::getTableName(),
@@ -85,7 +102,7 @@ abstract class BaseHlModel extends BaseModel
         /**
          * @var AddResult $result
          */
-        $result = static::getEntity()::update($id, $data);
+        $result = static::getDataManager()::update($id, $data);
         if (!$result->isSuccess()) {
             throw new ExceptionUpdateElementHlBlock(
                 static::getTableName(),
@@ -99,7 +116,7 @@ abstract class BaseHlModel extends BaseModel
 
     public static function delete(int $id): bool
     {
-        $result = static::getEntity()::delete($id);
+        $result = static::getDataManager()::delete($id);
         return $result->isSuccess();
     }
 

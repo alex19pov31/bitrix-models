@@ -24,7 +24,7 @@ class UserModelD7 extends BaseDataManagerModel
     /**
      * @return DataManager
      */
-    protected static function getEntity()
+    protected static function getDataManager()
     {
         if (static::$entity) {
             return static::$entity;
